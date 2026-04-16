@@ -1,0 +1,128 @@
+# Default configuration for Identity Theft Detection
+
+# Data configuration
+data:
+  train_size: 0.7
+  val_size: 0.15
+  test_size: 0.15
+  n_samples: 10000
+  fraud_rate: 0.1
+  random_seed: 42
+
+# Model configuration
+model:
+  type: "xgboost"  # Options: random_forest, xgboost, lightgbm, neural_net
+  params:
+    # XGBoost parameters
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+    subsample: 0.8
+    colsample_bytree: 0.8
+    scale_pos_weight: 9
+    
+    # Random Forest parameters
+    rf_n_estimators: 100
+    rf_max_depth: 10
+    rf_min_samples_split: 5
+    rf_min_samples_leaf: 2
+    
+    # LightGBM parameters
+    lgb_n_estimators: 100
+    lgb_max_depth: 6
+    lgb_learning_rate: 0.1
+    lgb_subsample: 0.8
+    lgb_colsample_bytree: 0.8
+    
+    # Neural Network parameters
+    nn_hidden_dims: [64, 32, 16]
+    nn_dropout_rate: 0.3
+    nn_learning_rate: 0.001
+    nn_epochs: 50
+    nn_batch_size: 32
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "auc_roc"
+    - "auc_pr"
+    - "precision_at_1"
+    - "precision_at_5"
+    - "precision_at_10"
+    - "precision_at_20"
+    - "alert_rate"
+    - "alert_efficiency"
+    - "expected_calibration_error"
+  
+  k_values: [1, 5, 10, 20]
+  precision_levels: [0.5, 0.7, 0.9]
+  tpr_levels: [0.5, 0.7, 0.9]
+
+# Training configuration
+training:
+  early_stopping_rounds: 10
+  validation_freq: 1
+  verbose: false
+  save_best_model: true
+  model_save_path: "models/best_model.pkl"
+
+# Feature configuration
+features:
+  temporal_features:
+    - "login_hour"
+    - "day_of_week"
+    - "time_since_last_login"
+    - "hour_sin"
+    - "hour_cos"
+    - "day_sin"
+    - "day_cos"
+  
+  device_features:
+    - "device_match"
+    - "device_sharing_count"
+    - "browser"
+    - "os"
+  
+  location_features:
+    - "location_match"
+    - "location_frequency"
+    - "latitude"
+    - "longitude"
+    - "ip_reputation_score"
+  
+  behavioral_features:
+    - "session_duration"
+    - "multiple_attempts"
+    - "failed_login_attempts"
+    - "transaction_amount"
+    - "velocity_score"
+    - "account_age_days"
+    - "previous_fraud_reports"
+    - "ip_sharing_count"
+
+# Alert configuration
+alerts:
+  default_threshold: 0.5
+  high_risk_threshold: 0.8
+  critical_threshold: 0.95
+  max_alerts_per_hour: 100
+  alert_cooldown_minutes: 30
+
+# Privacy and security
+privacy:
+  hash_sensitive_data: true
+  anonymize_ips: true
+  remove_pii: true
+  audit_logging: true
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/identity_theft_detection.log"
+  max_file_size: "10MB"
+  backup_count: 5
